@@ -12,8 +12,8 @@ import torch
 # from libKMCUDA import kmeans_cuda # we do not need to install libKMACUDA and import kmeans_cuda if we do not have a GPU 
 from kmeans_pytorch import kmeans as kmeans_pytorch # CPU version and 'cos' distance; # re-name to avoid repeated function names
 
-if torch.cuda.is_available():
-    from libKMCUDA import kmeans_cuda
+# if torch.cuda.is_available():
+#     from libKMCUDA import kmeans_cuda
 
 def FeCo(feat, method='kmeans', param=0.5, other_param='L2'):
     return FEATURE_COMPRESSION(feat, method, param, other_param)
@@ -187,17 +187,17 @@ def kmeans(feat, param=0.5, other_param="L2", force=True):
     device = feat.device
 
     # invoke kmeans to obtain the clustering results
-    if torch.cuda.is_available() and distance == 'L2': # when GPU available, using kmeans_cuda (not support COS distance well)
-        # x = feat.clone().detach().cpu().numpy() # kmeans_cuda runs on numpy
-        x = feat.clone().detach().cpu().numpy().astype(np.float32) # kmeans_cuda runs on numpy (np.float16 or np.float32)
-        _, cluster_ids = kmeans_cuda(x, k, verbosity=0, device=get_device(device), yinyang_t=0., metric=distance)
-    else: 
-        # When no GPU or using cosine distance, use another version of kmeans algo
-        # Although 'kmeans_pytorch' can also run on GPU, it is slower than 'kmeans_cuda'
-        distance_ = 'euclidean' if distance == 'L2' else 'cosine' # kmeans_pytorch takes different distance name
-        # cluster_ids, _ = kmeans_pytorch(feat, k, distance=distance_, tqdm_flag=False, device=device)
-        cluster_ids, _ = kmeans_pytorch(feat, k, distance=distance_, device=device) # will display lots of useless log TODO: disable the log by adding a parameter 'tqdm_flag'
-        cluster_ids = cluster_ids.numpy()
+    # if torch.cuda.is_available() and distance == 'L2': # when GPU available, using kmeans_cuda (not support COS distance well)
+    #     # x = feat.clone().detach().cpu().numpy() # kmeans_cuda runs on numpy
+    #     x = feat.clone().detach().cpu().numpy().astype(np.float32) # kmeans_cuda runs on numpy (np.float16 or np.float32)
+    #     _, cluster_ids = kmeans_cuda(x, k, verbosity=0, device=get_device(device), yinyang_t=0., metric=distance)
+    # else: 
+    # When no GPU or using cosine distance, use another version of kmeans algo
+    # Although 'kmeans_pytorch' can also run on GPU, it is slower than 'kmeans_cuda'
+    distance_ = 'euclidean' if distance == 'L2' else 'cosine' # kmeans_pytorch takes different distance name
+    # cluster_ids, _ = kmeans_pytorch(feat, k, distance=distance_, tqdm_flag=False, device=device)
+    cluster_ids, _ = kmeans_pytorch(feat, k, distance=distance_, device=device) # will display lots of useless log TODO: disable the log by adding a parameter 'tqdm_flag'
+    cluster_ids = cluster_ids.numpy()
 
     ## tricky way to make 'FeCo' differentiable (with the help of automatic differentiation supported by Pytorch) ##
     ## also deal with possible Nan problem (in rare cases, a very few clusters will contain no any vectors) ##

@@ -25,7 +25,7 @@ from attack.FAKEBOB import FAKEBOB
 from attack.SirenAttack import SirenAttack
 from attack.Kenan import Kenan
 
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 bits = 16
 
@@ -37,20 +37,20 @@ def parse_args():
     subparser = parser.add_subparsers(dest='system_type') # either iv (ivector-PLDA) or xv (xvector-PLDA)
 
     iv_parser = subparser.add_parser("iv_plda")
-    iv_parser.add_argument('-gmm', default='pre-trained-models/iv_plda/final_ubm.txt')
-    iv_parser.add_argument('-extractor', default='pre-trained-models/iv_plda/final_ie.txt')
-    iv_parser.add_argument('-plda', default='pre-trained-models/iv_plda/plda.txt')
-    iv_parser.add_argument('-mean', default='pre-trained-models/iv_plda/mean.vec')
-    iv_parser.add_argument('-transform', default='pre-trained-models/iv_plda/transform.txt')
-    iv_parser.add_argument('-model_file', default='model_file/iv_plda/speaker_model_iv_plda')
+    iv_parser.add_argument('-gmm', default='/home/tanh/codes/speaker-att/pre-trained-models/iv_plda/final_ubm.txt')
+    iv_parser.add_argument('-extractor', default='/home/tanh/codes/speaker-att/pre-trained-models/iv_plda/final_ie.txt')
+    iv_parser.add_argument('-plda', default='/home/tanh/codes/speaker-att/pre-trained-models/iv_plda/plda.txt')
+    iv_parser.add_argument('-mean', default='/home/tanh/codes/speaker-att/pre-trained-models/iv_plda/mean.vec')
+    iv_parser.add_argument('-transform', default='/home/tanh/codes/speaker-att/pre-trained-models/iv_plda/transform.txt')
+    iv_parser.add_argument('-model_file', default='/home/tanh/codes/speaker-att/model_file/iv_plda/speaker_model_iv_plda')
     iv_parser.add_argument('-gmm_frame_bs', type=int, default=200)
     
     xv_parser = subparser.add_parser("xv_plda")
-    xv_parser.add_argument('-extractor', default='pre-trained-models/xv_plda/xvecTDNN_origin.ckpt')
-    xv_parser.add_argument('-plda', default='pre-trained-models/xv_plda/plda.txt')
-    xv_parser.add_argument('-mean', default='pre-trained-models/xv_plda/mean.vec')
-    xv_parser.add_argument('-transform', default='pre-trained-models/xv_plda/transform.txt')
-    xv_parser.add_argument('-model_file', default='model_file/xv_plda/speaker_model_xv_plda')
+    xv_parser.add_argument('-extractor', default='/home/tanh/codes/speaker-att/pre-trained-models/xv_plda/xvecTDNN_origin.ckpt')
+    xv_parser.add_argument('-plda', default='/home/tanh/codes/speaker-att/pre-trained-models/xv_plda/plda.txt')
+    xv_parser.add_argument('-mean', default='/home/tanh/codes/speaker-att/pre-trained-models/xv_plda/mean.vec')
+    xv_parser.add_argument('-transform', default='/home/tanh/codes/speaker-att/pre-trained-models/xv_plda/transform.txt')
+    xv_parser.add_argument('-model_file', default='/home/tanh/codes/speaker-att/model_file/xv_plda/speaker_model_xv_plda')
     
     audionet_c_parser = subparser.add_parser("audionet_csine")
     audionet_c_parser.add_argument('-extractor', 
